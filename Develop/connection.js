@@ -1,33 +1,40 @@
 const mysql = require('mysql2');
-const startApp = require('./start');
-// require('dotenv').config();
-
+const chalk = require('chalk');
+const util = require('util');
+require('dotenv').config();
+// const startApp = require('../utils/start');
 //to connect to the database
 const connection = mysql.createConnection({
-    host: 'localhost', //  process.env.DB_HOST
-    port: 8889 || 3306, // process.env.DB_PORT,
-    user: 'root', //  process.env.DB_USER
-    password: 'root',  // process.env.DB_PASSWORD
-    database: 'employees'//  process.env.DB_NAME   
+  host:  process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME   
 });
+
 
 //once it connects, it will run the connectionLog function or it will throw an error
-connection.connect (err => {
-    if (err) throw err;
-    console.log(`Connected to ${process.env.DB_NAME} database`);
-    connectionLog();
-});
 
-connectionLog = () => {
-  console.log("✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨")
-  console.log("✨                              ✨")
-  console.log("✨            WELCOME           ✨")
-  console.log("✨              TO              ✨")
-  console.log("✨         YOUR EMPLOYEE        ✨")
-  console.log("✨       MANAGEMENT SYSTEM      ✨")
-  console.log("✨                              ✨")
-  console.log("✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨")
-  startApp();
-}
+// const makeConnection = (cb) => {
+//   connection.connect(err => {
+//     if (err) throw err;
+//     console.log(chalk.greenBright(`\n CONNECTED TO EMPLOYEES DATABASE\n`)); // ${process.env.DB_NAME}
+//     connectionLog();
+//     cb()
+//   });
+// }
+
+connection.query = util.promisify(connection.query);
+connection.connect = util.promisify(connection.connect);
+connection.customLog = () => {
+    console.log("✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨")
+    console.log("✨                              ✨")
+    console.log("✨            WELCOME           ✨")
+    console.log("✨              TO              ✨")
+    console.log("✨         YOUR EMPLOYEE        ✨")
+    console.log("✨       MANAGEMENT SYSTEM      ✨")
+    console.log("✨                              ✨")
+    console.log("✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨\n");
+  }
 
 module.exports = connection;
