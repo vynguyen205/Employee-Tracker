@@ -23,18 +23,18 @@ const startApp = async () => {
     const response = await inquirer.prompt(promptUser);
     switch (response.action) {
         case "View All Departments":
-            functionality.viewAllDepartments();
-            setTimeout(startApp, 3000);
-            break;
+                functionality.viewAllDepartments();
+                setTimeout(startApp, 3000);
+                break;
             case "View All Roles":
                 functionality.viewAllRoles();
-            
-            // case "View All Employees":
-            //     viewAllEmployees();
-            
-            // case "Add a Department":
-            //     addDepartment();
-            
+                break;
+            case "View All Employees":
+                functionality.viewAllEmployees();
+                break;
+            case "Add a Department":
+                functionality.addDepartment();
+            //     break;
             // case "Add a Role":
             //     addRole();
             
