@@ -34,10 +34,10 @@ const startApp = async () => {
                 break;
             case "Add a Department":
                 functionality.addDepartment();
-            //     break;
-            // case "Add a Role":
-            //     addRole();
-            
+                break;
+            case "Add a Role":
+                functionality.addRole();
+                break;
             // case "Add an Employee":
             //     addEmployee();
             
