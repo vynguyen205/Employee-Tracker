@@ -2,7 +2,6 @@ const connection = require('../connection');
 const chalk = require('chalk');
 const inquirer = require('inquirer');
 const questions = require('./questions');
-const run = require('nodemon/lib/monitor/run');
 
 
 viewAllDepartments = async () => {
@@ -23,7 +22,7 @@ viewAllEmployees = async () => {
 addDepartment = async () => {
     try {
         const answers =  await inquirer.prompt(questions.departmentQuestions);
-        await connection.promise().query(`INSERT INTO department (name) VALUES ('${answers.departmentName}')`)
+        await connection.promise().query(`INSERT INTO department (name) VALUES (?)`, answers.departmentName);
         console.log(chalk.green(`✨${answers.departmentName} department added successfully!✨`));  
     } 
     catch (err) {
@@ -33,9 +32,19 @@ addDepartment = async () => {
 
 addRole = async () => {
     try {
-        const department = await connection.promise().query(`SELECT name, id FROM department`);
-        const deparmentChoices = department.map(({ name, id }) => ({ name, value: id }));
-        
+        //get all departments
+        // [dpartment]= gets the array of deparment objects
+        const [department] = await connection.promise().query(`SELECT name, id FROM department`);
+        const deparmentChoices = department.map(dept => {
+            return {
+                //dept.name = name of the department
+                name: dept.name,
+                value: dept.id
+            }
+        });
+        //answers from user
+        const answer = await inquirer.prompt(questions.roleQuestions);
+        //ask user for role dapartment info
         const departmentPick = await inquirer.prompt ([
             {
                 type: 'list',
@@ -44,41 +53,62 @@ addRole = async () => {
                 choices: deparmentChoices
             },
         ])
-        //move this later
-        const answer = await inquirer.prompt(questions.roleQuestions);
+        
+        //create answer params for easier readibility;
         const answersParams = [answer.roleTitle, answer.salary, departmentPick.nameDepartment];
-        await connection.promise().query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, answersParams)
+        await connection.promise().query
+            (`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, 
+            answersParams)
+        
+        console.log(chalk.green(`✨${answer.roleTitle} added successfully!✨`));  
+
     } catch (err) {
         console.log(chalk.redBright(`🚨🚨🚨 SOMETHING WENT WRONG 🚨🚨🚨`, err));
     }    
 }
 
 addEmployee = async () => {
-    try{
-
-        const roles = await connection.promise().query(`SELECT title, department_id FROM role`);
-        const roleChoices = roles.map(({ title, id }) => ({ name: title, value: id }));
+    try {
+        //get all roles
+        const [role] = await connection.promise().query(`SELECT title, department_id FROM role`);
+        const roleChoices = role.map(role => {
+            return {
+                name: role.title,
+                value: role.department_id
+            }
+        })
         
+        //get all manager
+        const [manager] = await connection.promise().query(`SELECT id, first_name, last_name FROM employee`);
+        const employeeChoices = manager.map(manager => {
+            return {
+                name: `${manager.first_name} ${manager.last_name}`,
+                value: manager.id
+            }
+        })
+        
+        const answers = await inquirer.prompt(questions.employeeQuestions);
         const employeePick = await inquirer.prompt ([
             {
                 type: 'list',
                 name: 'employeeRole',
-                message: 'Select role of the employee.',
-                choices: []
+                message: 'Please select role of the employee.',
+                choices: roleChoices
             },
             {
-                type: 'input',
+                type: 'list',
                 name: 'managerID',
                 message: `Please select Employee's Manager:`,
-                choices: []
-                
+                choices: [...employeeChoices, {name: 'None', value: null}]
             },
         ])
-        const answers = await inquirer.prompt(questions.employeeQuestions);
         
         const answersParams = [answers.firstName, answers.lastName, employeePick.employeeRole, employeePick.managerID];
-        await connection.promise().query(`INSERT INTO department (name) VALUES (?, ?, ?, ?)`, answersParams)
-        console.log(chalk.green(`✨${answers.departmentName} department added successfully!✨`));  
+        await connection.promise().query
+            (`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, 
+            answersParams)
+
+        console.log(chalk.green(`✨${answers.firstName} ${answers.lastName} added successfully!✨`));  
     } 
     catch (err) {
         console.log(chalk.redBright(`🚨🚨🚨 SOMETHING WENT WRONG 🚨🚨🚨`, err));

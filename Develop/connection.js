@@ -1,8 +1,8 @@
+// const startApp = require('./utils/start');
 const mysql = require('mysql2');
 const chalk = require('chalk');
 const util = require('util');
 require('dotenv').config();
-// const startApp = require('../utils/start');
 //to connect to the database
 const connection = mysql.createConnection({
   host:  process.env.DB_HOST,
@@ -20,7 +20,7 @@ const connection = mysql.createConnection({
 //     if (err) throw err;
 //     console.log(chalk.greenBright(`\n CONNECTED TO EMPLOYEES DATABASE\n`)); // ${process.env.DB_NAME}
 //     connectionLog();
-//     cb()
+//     cb();
 //   });
 // }
 

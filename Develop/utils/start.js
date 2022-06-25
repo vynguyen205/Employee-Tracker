@@ -28,19 +28,22 @@ const startApp = async () => {
                 break;
             case "View All Roles":
                 functionality.viewAllRoles();
+                setTimeout(startApp, 3000);
                 break;
             case "View All Employees":
                 functionality.viewAllEmployees();
+                setTimeout(startApp, 3000);
                 break;
             case "Add a Department":
                 functionality.addDepartment();
-                break;
+                
             case "Add a Role":
                 functionality.addRole();
-                break;
-            // case "Add an Employee":
-            //     addEmployee();
-            
+                
+
+            case "Add an Employee":
+                functionality.addEmployee();
+                
             // case "Update an Employee Role":
             //     updateEmployee();
             
