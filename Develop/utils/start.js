@@ -24,22 +24,25 @@ const startApp = async () => {
     switch (response.action) {
         case "View All Departments":
                 functionality.viewAllDepartments();
-                setTimeout(startApp, 3000);
+                setTimeout(startApp, 2000);
                 break;
             case "View All Roles":
-                functionality.viewAllRoles();
+                functionality.viewAllRoles()
+                setTimeout(startApp, 2000);;
                 break;
             case "View All Employees":
-                functionality.viewAllEmployees();
+                functionality.viewAllEmployees()
+                setTimeout(startApp, 2000);
                 break;
             case "Add a Department":
-                functionality.addDepartment();
-                break;
+                await functionality.addDepartment()
+                return startApp();
             case "Add a Role":
-                functionality.addRole();
-                break;
-            // case "Add an Employee":
-            //     addEmployee();
+                await functionality.addRole();
+                return startApp();
+            case "Add an Employee":
+                await functionality.addEmployee();
+                return startApp();
             
             // case "Update an Employee Role":
             //     updateEmployee();
