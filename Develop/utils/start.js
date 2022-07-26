@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
 const functionality = require('./functionality'); // import the functionality file
+const chalk = require('chalk');
 const connection = require('../connection' );
-
 const promptUser = {
         type: 'list',
         name: 'action',
@@ -14,6 +14,10 @@ const promptUser = {
             "Add a Role",
             "Add an Employee",
             "Update an Employee Role",
+            "Update an Employee's Manager",
+            "Delete an Employee",
+            "Delete a Role",
+            "Delete a Department",
             "Exit"
         ]
 }
@@ -43,13 +47,29 @@ const startApp = async () => {
             case "Add an Employee":
                 await functionality.addEmployee();
                 return startApp();
-            
-            // case "Update an Employee Role":
-            //     updateEmployee();
-            
+            case "Update an Employee Role":
+                await functionality.updateEmployeeRole();
+                return startApp();
+            case "Update an Employee's Manager":
+                await functionality.updateEmployeeManager();
+                return startApp();
+            case "Delete an Employee":
+                await functionality.deleteEmployee();
+                return startApp();
+            case "Delete a Role":
+                await functionality.deleteRole();
+                return startApp();
+            case "Delete a Department":
+                await functionality.deleteDepartment();
+                return startApp();
+            case "Exit":
+                console.log(chalk.green("Thank you && Goodbye!👋"));
+                process.exit();
         }
     }
 
 connection.connect().then(startApp);
 
 module.exports = startApp ; 
+ 
+      

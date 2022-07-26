@@ -24,7 +24,9 @@ const connection = mysql.createConnection({
 //   });
 // }
 
+//util.promisify is a function that takes a callback function and returns a promise, which in this case is a connection.query
 connection.query = util.promisify(connection.query);
+// this is promisifying the connection.connect function
 connection.connect = util.promisify(connection.connect);
 connection.customLog = () => {
     console.log("✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨")
